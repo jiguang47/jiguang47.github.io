@@ -16,6 +16,7 @@
 - 增加 Go 1.23 的迭代器范围遍历示例。
 - 随机数示例使用 Go 1.22 的 `math/rand/v2`。
 - WaitGroup 示例使用 Go 1.25 的 `WaitGroup.Go`。
+- 新增“现代 Go 1.22-1.27”章节，覆盖整数 range、增强 HTTP 路由、泛型别名、模块工具、`b.Loop`、`new(expr)`、泛型方法和 `go fix`。
 
 ## 本地预览
 

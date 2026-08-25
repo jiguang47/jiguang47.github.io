@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Go by Example 中文版: 现代 Go 1.22-1.27</title>
+    <link rel=stylesheet href="site.css">
+    <script src="progress.js" defer></script>
+  </head>
+  <script>
+      onkeydown = (e) => {
+          if (e.key == "ArrowLeft") {
+              window.location.href = 'exit';
+          }
+      }
+  </script>
+  <body>
+    <div class="example" id="modern-go">
+      <h2><a href="./">Go by Example 中文版</a>: 现代 Go 1.22-1.27</h2>
+
+      <table>
+        <tr>
+          <td class="docs">
+            <p>本章汇总 Go 1.22 到 Go 1.27 中最适合日常开发和学习的变化。旧代码大多仍能运行；这些特性用于让新代码更简洁、更清晰。</p>
+            <p>本章的示例要求对应的最低 Go 版本。当前站点按 Go 1.27 编写。</p>
+          </td>
+          <td class="code empty leading"></td>
+        </tr>
+
+        <tr>
+          <td class="docs">
+            <p><strong>Go 1.22：整数 range。</strong>可以直接对非负整数进行 <code>range</code>，省去计数器变量的初始化和比较。</p>
+          </td>
+          <td class="code leading"><pre class="chroma"><code>for i := range 5 {
+    fmt.Println(i)
+}
+// 0 1 2 3 4</code></pre></td>
+        </tr>
+
+        <tr>
+          <td class="docs">
+            <p><strong>Go 1.22：增强的 HTTP 路由。</strong><code>net/http</code> 的 <code>ServeMux</code> 模式支持方法匹配和路径通配符；路径参数可通过 <code>Request.PathValue</code> 读取。</p>
+          </td>
+          <td class="code leading"><pre class="chroma"><code>mux := http.NewServeMux()
+mux.HandleFunc("GET /users/{id}", func(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, "user: %s\n", r.PathValue("id"))
+})
+
+http.ListenAndServe(":8080", mux)</code></pre></td>
+        </tr>
+
+        <tr>
+          <td class="docs">
+            <p><strong>Go 1.23：迭代器。</strong><code>range</code> 可以遍历迭代器函数，标准库还提供了 <code>iter</code>、<code>slices</code> 与 <code>maps</code> 的配套工具。请参阅本站的<a href="range-over-iterators">迭代器范围遍历</a>章节。</p>
+          </td>
+          <td class="code leading"><pre class="chroma"><code>for value := range sequence {
+    fmt.Println(value)
+}</code></pre></td>
+        </tr>
+
+        <tr>
+          <td class="docs">
+            <p><strong>Go 1.24：泛型类型别名。</strong>现在可以为泛型类型声明别名；这对逐步迁移 API 或给复杂类型起更短的名字很有帮助。</p>
+          </td>
+          <td class="code leading"><pre class="chroma"><code>type Set[T comparable] = map[T]struct{}
+
+var tags Set[string]
+tags = make(Set[string])
+tags["go"] = struct{}{}</code></pre></td>
+        </tr>
+
+        <tr>
+          <td class="docs">
+            <p><strong>Go 1.24：模块工具。</strong>使用 <code>go get -tool</code> 将开发工具记录在 <code>go.mod</code> 的 <code>tool</code> 指令中，团队成员可通过 <code>go tool</code> 使用同一版本。</p>
+          </td>
+          <td class="code leading"><pre class="chroma"><code>$ go get -tool golang.org/x/tools/cmd/stringer
+$ go tool stringer -type=Status
+
+// go.mod
+tool golang.org/x/tools/cmd/stringer</code></pre></td>
+        </tr>
+
+        <tr>
+          <td class="docs">
+            <p><strong>Go 1.24：现代基准测试。</strong>新的 <code>b.Loop</code> 比手写 <code>b.N</code> 循环更不容易出错，并能确保昂贵的准备和清理逻辑每次基准运行只执行一次。</p>
+          </td>
+          <td class="code leading"><pre class="chroma"><code>func BenchmarkIntMin(b *testing.B) {
+    for b.Loop() {
+        IntMin(1, 2)
+    }
+}</code></pre></td>
+        </tr>
+
+        <tr>
+          <td class="docs">
+            <p><strong>Go 1.26：<code>new(expr)</code> 与 <code>go fix</code>。</strong><code>new</code> 现在可直接接受表达式作为初始值。<code>go fix</code> 的 modernizer 可将旧写法自动迁移到现代语言和标准库习惯；提交前仍应运行测试并检查 diff。</p>
+          </td>
+          <td class="code leading"><pre class="chroma"><code>point := new(struct{ X, Y int }{X: 3, Y: 4})
+fmt.Println(point.X, point.Y)
+
+$ go fix ./...
+$ go test ./...</code></pre></td>
+        </tr>
+
+        <tr>
+          <td class="docs">
+            <p><strong>Go 1.27：泛型方法。</strong>非泛型类型的方法现在可以声明自己的类型参数，适合把与某个数据类型紧密相关的泛型操作放到该类型的命名空间中。接口方法不能声明类型参数，泛型方法也不能用于实现接口方法。</p>
+          </td>
+          <td class="code"><pre class="chroma"><code>type Registry struct {
+    values map[string]any
+}
+
+func (r *Registry) Get[T any](key string) (T, bool) {
+    value, ok := r.values[key]
+    if !ok {
+        var zero T
+        return zero, false
+    }
+    typed, ok := value.(T)
+    return typed, ok
+}
+
+name, ok := registry.Get[string]("name")</code></pre></td>
+        </tr>
+      </table>
+
+      <p class="next">继续回到<a href="./">完整教程目录</a>，按你的学习进度选择下一课。</p>
+      <p class="footer"><a href="https://go.dev/doc/devel/release">Go 官方发布说明</a> | <a href="https://github.com/gobyexample-cn">gobyexample-cn</a> 翻译 | <a href="https://github.com/gobyexample-cn/gobyexample/issues">反馈</a></p>
+    </div>
+  </body>
+</html>

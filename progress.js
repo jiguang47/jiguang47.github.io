@@ -19,7 +19,7 @@
         "line-filters", "file-paths", "directories", "temporary-files-and-directories",
         "testing-and-benchmarking", "command-line-arguments", "command-line-flags",
         "command-line-subcommands", "environment-variables", "http-clients", "http-servers",
-        "context", "spawning-processes", "execing-processes", "signals", "exit"
+        "context", "spawning-processes", "execing-processes", "signals", "exit", "modern-go"
     ];
 
     function readProgress() {
