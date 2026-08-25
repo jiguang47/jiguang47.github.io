@@ -1,12 +1,10 @@
 # Go by Example 中文学习版
 
-> **[立即访问在线教程](https://jiguang47.github.io/)**
+## [点击进入 Go by Example 中文学习版](https://jiguang47.github.io/)
+
+**[Releases](https://github.com/jiguang47/jiguang47.github.io/releases)**
 
 基于示例学习 Go 的中文静态教程，加入了本地学习进度记录，并补充了部分现代 Go 特性。
-
-## 在线访问
-
-### [点击进入 Go by Example 中文学习版](https://jiguang47.github.io/)
 
 ## 特性
 
