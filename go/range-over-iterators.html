@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Go by Example 中文版: 迭代器范围遍历</title>
+    <link rel=stylesheet href="site.css">
+    <script src="progress.js" defer></script>
+  </head>
+  <script>
+      onkeydown = (e) => {
+          if (e.key == "ArrowLeft") {
+              window.location.href = 'generics';
+          }
+          if (e.key == "ArrowRight") {
+              window.location.href = 'errors';
+          }
+      }
+  </script>
+  <body>
+    <div class="example" id="range-over-iterators">
+      <h2><a href="./">Go by Example 中文版</a>: 迭代器范围遍历</h2>
+
+      <table>
+        <tr>
+          <td class="docs">
+            <p>从 Go 1.23 开始，<code>range</code> 可以遍历<em>迭代器函数</em>。标准库的 <code>iter</code> 包定义了迭代器签名；它允许按需产生值，无需先创建完整的切片。</p>
+            <p>下面实现一个链表迭代器，并展示如何提前停止遍历。</p>
+          </td>
+          <td class="code leading">
+            <img title="Copy code" src="clipboard.png" class="copy" />
+            <pre class="chroma"><code>package main
+
+import (
+    "fmt"
+    "iter"
+)
+
+type List[T any] struct {
+    head, tail *element[T]
+}
+
+type element[T any] struct {
+    next *element[T]
+    val  T
+}
+
+func (lst *List[T]) Push(v T) {
+    node := &amp;element[T]{val: v}
+    if lst.tail == nil {
+        lst.head, lst.tail = node, node
+        return
+    }
+    lst.tail.next, lst.tail = node, node
+}
+
+func (lst *List[T]) All() iter.Seq[T] {
+    return func(yield func(T) bool) {
+        for current := lst.head; current != nil; current = current.next {
+            if !yield(current.val) {
+                return
+            }
+        }
+    }
+}
+
+func main() {
+    var numbers List[int]
+    numbers.Push(10)
+    numbers.Push(13)
+    numbers.Push(23)
+
+    for number := range numbers.All() {
+        fmt.Println(number)
+    }
+
+    for number := range numbers.All() {
+        if number &gt;= 13 {
+            break
+        }
+        fmt.Println("before break:", number)
+    }
+}</code></pre>
+          </td>
+        </tr>
+      </table>
+
+      <table>
+        <tr>
+          <td class="docs">
+            <p>当 <code>range</code> 遇到 <code>break</code> 时，传给迭代器的 <code>yield</code> 会返回 <code>false</code>，因此迭代器能够及时停止工作。</p>
+          </td>
+          <td class="code leading">
+            <pre class="chroma"><code>$ go run range-over-iterators.go
+10
+13
+23
+before break: 10</code></pre>
+          </td>
+        </tr>
+      </table>
+
+      <p class="next">下一个例子: <a href="errors">错误处理</a></p>
+      <p class="footer">
+        <a href="https://twitter.com/mmcgrana">@mmcgrana</a> 和<a href="https://eli.thegreenplace.net">Eli Bendersky</a>编写 | <a href="https://github.com/gobyexample-cn">gobyexample-cn</a> 翻译 | <a href="https://github.com/gobyexample-cn/gobyexample/issues">反馈</a> | <a href="https://github.com/gobyexample-cn/gobyexample">源码</a> | <a href="https://github.com/mmcgrana/gobyexample#license">license</a>
+      </p>
+    </div>
+    <script>
+      var codeLines = [];
+      codeLines.push('package main\u000A\u000Aimport (\u000A    "fmt"\u000A    "iter"\u000A)\u000A\u000Atype List[T any] struct {\u000A    head, tail *element[T]\u000A}\u000A\u000Atype element[T any] struct {\u000A    next *element[T]\u000A    val  T\u000A}\u000A\u000Afunc (lst *List[T]) Push(v T) {\u000A    node := \u0026element[T]{val: v}\u000A    if lst.tail == nil {\u000A        lst.head, lst.tail = node, node\u000A        return\u000A    }\u000A    lst.tail.next, lst.tail = node, node\u000A}\u000A\u000Afunc (lst *List[T]) All() iter.Seq[T] {\u000A    return func(yield func(T) bool) {\u000A        for current := lst.head; current != nil; current = current.next {\u000A            if !yield(current.val) {\u000A                return\u000A            }\u000A        }\u000A    }\u000A}\u000A\u000Afunc main() {\u000A    var numbers List[int]\u000A    numbers.Push(10)\u000A    numbers.Push(13)\u000A    numbers.Push(23)\u000A\u000A    for number := range numbers.All() {\u000A        fmt.Println(number)\u000A    }\u000A\u000A    for number := range numbers.All() {\u000A        if number \u003E= 13 {\u000A            break\u000A        }\u000A        fmt.Println("before break:", number)\u000A    }\u000A}\u000A');
+    </script>
+    <script src="site.js" async></script>
+  </body>
+</html>

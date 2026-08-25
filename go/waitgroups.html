@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Go by Example 中文版: WaitGroup</title>
+    <link rel=stylesheet href="site.css">
+    <script src="progress.js" defer></script>
+  </head>
+  <body>
+    <div class="example" id="waitgroups">
+      <h2><a href="./">Go by Example 中文版</a>: WaitGroup</h2>
+      <table><tr>
+        <td class="docs"><p>想要等待多个协程完成，可以使用 <code>sync.WaitGroup</code>。Go 1.25 新增的 <code>WaitGroup.Go</code> 会自动调用 <code>Add(1)</code>，并在函数返回时调用 <code>Done()</code>。</p></td>
+        <td class="code leading"><img title="Copy code" src="clipboard.png" class="copy" /><pre class="chroma"><code>package main
+
+import (
+    "fmt"
+    "sync"
+    "time"
+)
+
+func worker(id int) {
+    fmt.Printf("Worker %d starting\n", id)
+    time.Sleep(time.Second)
+    fmt.Printf("Worker %d done\n", id)
+}
+
+func main() {
+    var wg sync.WaitGroup
+    for i := 1; i &lt;= 5; i++ {
+        wg.Go(func() {
+            worker(i)
+        })
+    }
+    wg.Wait()
+}</code></pre></td>
+      </tr></table>
+      <table><tr>
+        <td class="docs"><p>Go 1.22 起，<code>for</code> 循环变量每次迭代都会创建新的实例，因此闭包可以直接安全地使用 <code>i</code>。如果需要从协程传递错误，请考虑 <a href="https://pkg.go.dev/golang.org/x/sync/errgroup"><code>errgroup</code></a>。</p></td>
+        <td class="code leading"><pre class="chroma"><code>$ go run waitgroups.go
+Worker 5 starting
+Worker 1 starting
+Worker 3 starting
+Worker 4 starting
+Worker 2 starting
+Worker 1 done
+Worker 5 done
+Worker 4 done
+Worker 3 done
+Worker 2 done</code></pre></td>
+      </tr></table>
+      <p class="next">下一个例子: <a href="rate-limiting">速率限制</a></p>
+      <p class="footer"><a href="https://github.com/gobyexample-cn">gobyexample-cn</a> 翻译 | <a href="https://github.com/gobyexample-cn/gobyexample/issues">反馈</a></p>
+    </div>
+    <script>var codeLines = ['package main\n\nimport (\n    "fmt"\n    "sync"\n    "time"\n)\n\nfunc worker(id int) {\n    fmt.Printf("Worker %d starting\\n", id)\n    time.Sleep(time.Second)\n    fmt.Printf("Worker %d done\\n", id)\n}\n\nfunc main() {\n    var wg sync.WaitGroup\n    for i := 1; i <= 5; i++ {\n        wg.Go(func() {\n            worker(i)\n        })\n    }\n    wg.Wait()\n}\n'];</script>
+    <script src="site.js" async></script>
+  </body>
+</html>

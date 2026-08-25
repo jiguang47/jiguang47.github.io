@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Go by Example 中文版: 随机数</title>
+    <link rel=stylesheet href="site.css">
+    <script src="progress.js" defer></script>
+  </head>
+  <body>
+    <div class="example" id="random-numbers">
+      <h2><a href="./">Go by Example 中文版</a>: 随机数</h2>
+      <table><tr>
+        <td class="docs"><p>Go 1.22 引入了 <code>math/rand/v2</code>。它提供伪随机数生成器，API 更简洁，也不再需要手动给包级随机源播种。</p></td>
+        <td class="code leading"><img title="Copy code" src="clipboard.png" class="copy" /><pre class="chroma"><code>package main
+
+import (
+    "fmt"
+    "math/rand/v2"
+)
+
+func main() {
+    fmt.Print(rand.IntN(100), ",")
+    fmt.Println(rand.IntN(100))
+    fmt.Println(rand.Float64())
+    fmt.Println((rand.Float64() * 5) + 5)
+
+    r := rand.New(rand.NewPCG(42, 1024))
+    fmt.Println(r.IntN(100), r.IntN(100))
+    r2 := rand.New(rand.NewPCG(42, 1024))
+    fmt.Println(r2.IntN(100), r2.IntN(100))
+}</code></pre></td>
+      </tr></table>
+      <table><tr>
+        <td class="docs"><p>随机数不适合生成密码、令牌等安全敏感数据。此类场景请使用 <code>crypto/rand</code>。</p><p>更多 API 请参阅 <a href="https://pkg.go.dev/math/rand/v2"><code>math/rand/v2</code> 文档</a>。</p></td>
+        <td class="code leading"><pre class="chroma"><code>$ go run random-numbers.go
+13,98
+0.6620859492870604
+7.123187485356329
+94 49
+94 49</code></pre></td>
+      </tr></table>
+      <p class="next">下一个例子: <a href="number-parsing">数字解析</a></p>
+      <p class="footer"><a href="https://github.com/gobyexample-cn">gobyexample-cn</a> 翻译 | <a href="https://github.com/gobyexample-cn/gobyexample/issues">反馈</a></p>
+    </div>
+    <script>var codeLines = ['package main\n\nimport (\n    "fmt"\n    "math/rand/v2"\n)\n\nfunc main() {\n    fmt.Print(rand.IntN(100), ",")\n    fmt.Println(rand.IntN(100))\n    fmt.Println(rand.Float64())\n    fmt.Println((rand.Float64() * 5) + 5)\n    r := rand.New(rand.NewPCG(42, 1024))\n    fmt.Println(r.IntN(100), r.IntN(100))\n    r2 := rand.New(rand.NewPCG(42, 1024))\n    fmt.Println(r2.IntN(100), r2.IntN(100))\n}\n'];</script>
+    <script src="site.js" async></script>
+  </body>
+</html>
